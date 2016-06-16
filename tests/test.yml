@@ -8,8 +8,14 @@
      - arc_frontend_runtimedir: "{{ arc_frontend_griddir }}/runtime"
      - shared_scratch: "/tmp"
      - fqdn: "fgci.csc.fi"
-     - gocDBName: "io"
-     - voName: "fgi"
+     - gocDBName: "FI_MySite"
+     - voName: "fgi.csc.fi"
      - adminMailAddr: "mail@example.com" 
+     - infoSysAdminDomain: "csc.fi"
+     - resource_location: "City, Finland"
+     - resource_latitude: "42"
+     - resource_longitude: "42"
+     - instSiteURL: "https://www.csc.fi"
+     - siteName: "FI_MySite"
    roles:
      - ansible-role-arc-frontend
