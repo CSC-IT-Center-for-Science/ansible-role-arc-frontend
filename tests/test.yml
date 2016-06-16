@@ -17,5 +17,11 @@
      - resource_longitude: "42"
      - instSiteURL: "https://www.csc.fi"
      - siteName: "FI_MySite"
+     - arc_frontend_services:
+       - a-rex
+#       - gridftpd
+       - nordugrid-arc-bdii
+#       - nordugrid-arc-slapd
+       - nordugrid-arc-inforeg
    roles:
      - ansible-role-arc-frontend
