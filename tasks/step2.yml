@@ -73,9 +73,6 @@
   when: add_slurm_accts and init_griduser_accts
   ignore_errors: yes
 
-- name: Template arc.conf file
-  template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644 
-
 - name: checks hostkey.pem exists on files/certificates/
   stat: path=files/certificates/hostkey.pem
   register: hostkey
@@ -95,16 +92,3 @@
 - name: copy host certificate file
   copy: src=files/certificates/hostcert.pem dest=/etc/grid-security/ owner=root mode=0644
   when: hostcert.stat.exists
-
-- name: start and enable arc frontend services
-  service: name={{ item }} state=started enabled=yes
-  with_items: "{{ arc_frontend_services | default({}) }}"
-  when: arc_frontend_services.0 != ""
-
-- name: Create cron job that copies runtime apps from CVMFS
-  cron: name="copy runtime" minute=0 hour=6
-        user="root" job="/usr/bin/cp -r -u /cvmfs/fgi.csc.fi/runtimes/sl6/current/* /scratch/grid/runtime/"
-        cron_file=ansible_copyRuntime
-
-- name: run /usr/sbin/nordugridmap
-  command: /usr/sbin/nordugridmap

@@ -7,7 +7,7 @@
 #
 - name: install nordugrid repo
   yum: pkg=http://download.nordugrid.org/packages/nordugrid-release/releases/{{ arc_frontend_release }}/centos/el7/x86_64/nordugrid-release-{{ arc_frontend_release }}-1.el7.centos.noarch.rpm
-  
+
 - name: install nordugrid rpm key
   rpm_key: key=http://download.nordugrid.org/RPM-GPG-KEY-nordugrid state=present
 
@@ -75,3 +75,20 @@
 # Run the last tasks in a separate file, so we can exclude the delegation tasks while testing.
 - include: step2.yml
   when: ansible_virtualization_type != "docker"
+
+- name: Template arc.conf file
+  template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
+
+- name: start and enable arc frontend services
+  service: name={{ item }} state=started enabled=yes
+  with_items: "{{ arc_frontend_services | default({}) }}"
+  when: arc_frontend_services.0 != ""
+
+- name: Create cron job that copies runtime apps from CVMFS
+  cron: name="copy runtime" minute=0 hour=6
+        user="root" job="/usr/bin/cp -r -u /cvmfs/fgi.csc.fi/runtimes/sl6/current/* /scratch/grid/runtime/"
+        cron_file=ansible_copyRuntime
+
+- name: run /usr/sbin/nordugridmap
+  command: /usr/sbin/nordugridmap
+
