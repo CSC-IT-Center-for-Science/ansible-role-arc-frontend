@@ -8,5 +8,8 @@
      - arc_frontend_runtimedir: "{{ arc_frontend_griddir }}/runtime"
      - shared_scratch: "/tmp"
      - fqdn: "fgci.csc.fi"
+     - gocDBName: "io"
+     - voName: "fgi"
+     - adminMailAddr: "mail@example.com" 
    roles:
      - ansible-role-arc-frontend
