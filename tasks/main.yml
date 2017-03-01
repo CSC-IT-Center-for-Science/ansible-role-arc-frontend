@@ -26,21 +26,15 @@
   command: mv /etc/yum.repos.d/nordugrid.repo.rpmnew /etc/yum.repos.d/nordugrid.repo
   when: arc_frontend_rpmnew_stat.stat.exists
 
-- name: arc_frontend_griddir must be defined
+- name: assert that a few variables are defined
   assert:
-    that: "arc_frontend_griddir is defined"
-
-- name: arc_frontend_sessiondir must be defined
-  assert:
-    that: "arc_frontend_sessiondir is defined"
-
-- name: arc_frontend_runtimedir must be defined
-  assert:
-    that: "arc_frontend_runtimedir is defined"
-
-- name: arc_frontend_cachedir must be defined
-  assert:
-    that: "arc_frontend_cachedir is defined"
+    that: "{{ item }} is defined"
+    msg: "{{ item }} variable must be defined"
+  with_items:
+   - "arc_frontend_griddir"
+   - "arc_frontend_sessiondir"
+   - "arc_frontend_runtimedir"
+   - "arc_frontend_cachedir"
 
 - name: Create Grid dir 
   file: path={{ arc_frontend_griddir }} state=directory owner=root mode=0755
