@@ -78,6 +78,7 @@
 
 - name: Template arc.conf file
   template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
+  notify: restart_arc_frontend_services
 
 - name: start and enable arc frontend services
   service: name={{ item }} state=started enabled=yes
