@@ -1,0 +1,32 @@
+#!/bin/bash
+# run with any parameter to get verbose debugging
+
+# Ulf Tigerstedt <ulf.tigerstedt@csc.fi> 2017
+
+KEYMOD=`openssl rsa -noout -modulus -in /etc/grid-security/hostkey.pem`
+CERTMOD=`openssl x509 -noout -modulus -in /etc/grid-security/hostcert.pem`
+VERIFY=`openssl verify -CApath /etc/grid-security/certificates -purpose sslserver /etc/grid-security/hostcert.pem`
+
+if [ "$KEYMOD" = "$CERTMOD" ]; then 
+	if [ ! -z $1 ]; then
+		echo Modulus of key and cert matches
+	fi
+else
+	if [ ! -z $1 ]; then
+		echo Modulus of key and cert mismatches
+	fi
+	exit 1
+fi 
+
+if [[ "$VERIFY" =~ "error" ]]; then
+	if [ ! -z $1 ]; then
+		echo Verification of hostcert failed
+                echo $VERIFY
+	fi
+	exit 1
+else
+	if [ ! -z $1 ]; then
+		echo Verification of hostcert succeeded
+                echo $VERIFY
+	fi
+fi
