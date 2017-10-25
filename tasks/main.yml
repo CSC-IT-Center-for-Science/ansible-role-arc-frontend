@@ -67,7 +67,7 @@
   when: init_griduser_accts
 
 # Run the last tasks in a separate file, so we can exclude the delegation tasks while testing.
-- include: step2.yml
+- include_tasks: step2.yml
   when: ansible_virtualization_type != "docker"
 
 - name: Template arc.conf file
