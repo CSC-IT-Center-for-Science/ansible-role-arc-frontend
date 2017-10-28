@@ -105,5 +105,6 @@
 
 - name: verify certificate and hostkey
   script: files/verify_certificate
+  changed_when: False
 
 
