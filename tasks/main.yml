@@ -15,8 +15,7 @@
   yum: name=* state=latest
 
 - name: install Nordugrid ARC packages
-  yum: name={{ item }} state=present
-  with_items: "{{ arc_frontend_packages | default({}) }}"
+  yum: name={{ arc_frontend_packages | default({}) }} state=present
 
 - name: check if there's a nordugrid.repo.rpmnew
   stat: path=/etc/yum.repos.d/nordugrid.repo.rpmnew
