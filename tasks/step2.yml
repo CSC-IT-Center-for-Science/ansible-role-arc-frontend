@@ -11,11 +11,13 @@
   group: name={{ group_name_fgi }} state=present
   delegate_to: install
   when: init_griduser_accts
-          
+
+# Ops users do not need write access for home
 - name: Create OPS home dir 
   file: path="{{ arc_frontend_griddir }}/{{ group_name_ops }}" state=directory owner=root mode=0755
   when: init_griduser_accts
 
+# Fgi users do not need write access for home
 - name: Create FGI home dir 
   file: path="{{ arc_frontend_griddir }}/{{ group_name_fgi }}" state=directory owner=root mode=0755
   when: init_griduser_accts
