@@ -23,7 +23,7 @@
   when: init_griduser_accts
 
 - name: Create generic gridnull user
-  user: name=gridnull state=present home="{{ arc_frontend_griddir }}/gridnull" createhome=no
+  user: name=gridnull state=present home="{{ arc_frontend_griddir }}/gridnull" createhome=yes
   delegate_to: install
   when: init_griduser_accts
 
