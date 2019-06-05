@@ -49,21 +49,21 @@
 
 - name: Create UnixGroup for OPS dir 
   file: path={{ unixgroup_dir_ops }} state=directory owner=root mode=0755
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Populate ops pool file
   lineinfile: dest="{{ unixgroup_dir_ops }}/pool" line={{ item }} create=yes state=present
   with_sequence: start=0 end={{ ops_acct_nr }} format={{ group_name_ops }}%03d
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Populate fgi pool file
   lineinfile: dest="{{ unixgroup_dir_fgi }}/pool" line={{ item }} create=yes state=present
   with_sequence: start=0 end={{ fgi_acct_nr }} format={{ group_name_fgi }}%03d
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create UnixGroup for FGI dir 
   file: path={{ unixgroup_dir_fgi }} state=directory owner=root mode=0755
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 # Run the last tasks in a separate file, so we can exclude the delegation tasks while testing.
 - include_tasks: step2.yml

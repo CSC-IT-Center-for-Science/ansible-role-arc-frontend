@@ -5,74 +5,74 @@
 - name: Create gridops group
   group: name={{ group_name_ops }} state=present
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create gridfgi group
   group: name={{ group_name_fgi }} state=present
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 # Ops users do not need write access for home
 - name: Create OPS home dir 
   file: path="{{ arc_frontend_griddir }}/{{ group_name_ops }}" state=directory owner=root mode=0755
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 # Fgi users do not need write access for home
 - name: Create FGI home dir 
   file: path="{{ arc_frontend_griddir }}/{{ group_name_fgi }}" state=directory owner=root mode=0755
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create generic gridnull user
   user: name=gridnull state=present home="{{ arc_frontend_griddir }}/gridnull" createhome=yes
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create generic grid user
   user: name=grid state=present home="{{ arc_frontend_griddir }}/grid"
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create Grid users for OPS
   user: name={{ item }} state=present home="{{ arc_frontend_griddir }}/{{ group_name_ops }}" groups={{ group_name_ops }} createhome=no
   with_sequence: start=0 end={{ ops_acct_nr }} format={{ group_name_ops }}%03d
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Create Grid users for FGI
   user: name={{ item }} state=present home="{{ arc_frontend_griddir }}/{{ group_name_fgi }}" groups={{ group_name_fgi }} createhome=no
   with_sequence: start=0 end={{ fgi_acct_nr }} format={{ group_name_fgi }}%03d
   delegate_to: install
-  when: init_griduser_accts
+  when: init_griduser_accts|bool
 
 - name: Update NIS DB
   command: /usr/bin/make -C /var/yp
   delegate_to: install
-  when: arc_frontend_nis
+  when: arc_frontend_nis|bool
 
 - name: Create Slurm user account for OPS 1/2
   command: /usr/bin/sacctmgr -i add account {{ group_name_ops }}
   delegate_to: install
-  when: add_slurm_accts and init_griduser_accts
+  when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for OPS 2/2
   command: /usr/bin/sacctmgr -i add user name={{ item }} account={{group_name_ops }}
   with_sequence: start=0 end={{ ops_acct_nr }} format={{ group_name_ops }}%03d
   delegate_to: install
-  when: add_slurm_accts and init_griduser_accts
+  when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for FGI 1/2
   command: /usr/bin/sacctmgr -i add account {{ group_name_fgi }}
   delegate_to: install
-  when: add_slurm_accts and init_griduser_accts
+  when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 - name: Create Slurm user account for FGI 2/2
   command: /usr/bin/sacctmgr -i add user name={{ item }} account={{group_name_fgi }}
   with_sequence: start=0 end={{ fgi_acct_nr }} format={{ group_name_fgi }}%03d
   delegate_to: install
-  when: add_slurm_accts and init_griduser_accts
+  when: add_slurm_accts|bool and init_griduser_accts|bool
   ignore_errors: yes
 
 # Slurm Fairshare. This sould go to Slurm role in the future. 
@@ -81,7 +81,7 @@
   command: /usr/bin/sacctmgr -i modify account name={{ item.group }} set fairshare={{ item.share }}
   with_items: "{{arc_frontend_fairshare}}"
   delegate_to: install
-  when: arc_frontend_enable_fairshare
+  when: arc_frontend_enable_fairshare|bool
 
 - name: checks hostkey.pem exists on files/certificates/
   stat: path=files/certificates/hostkey.pem
