@@ -23,9 +23,15 @@
   when: init_griduser_accts|bool
 
 - name: Create generic gridnull user
-  user: name=gridnull state=present home="{{ arc_frontend_griddir }}/gridnull" createhome=yes
+  user: name=gridnull state=present home="{{ arc_frontend_griddir }}/gridnull"
   delegate_to: install
   when: init_griduser_accts|bool
+
+- name: Make sure gridnull home dir exists
+  file: path="{{ arc_frontend_griddir }}/gridnull" state=directory owner=gridnull group=gridnull mode=0700
+  delegate_to: install
+  when: init_griduser_accts|bool
+  ignore errors: true
 
 - name: Create generic grid user
   user: name=grid state=present home="{{ arc_frontend_griddir }}/grid"
