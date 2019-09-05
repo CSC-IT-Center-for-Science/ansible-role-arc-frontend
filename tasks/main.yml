@@ -73,9 +73,21 @@
   template: backup=yes src=arc.conf.j2 dest=/etc/arc.conf owner=root mode=0644
   notify: restart_arc_frontend_services
 
-- name: start and enable arc frontend services
+- name: Stop arc services for a moment
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items: "{{ arc_frontend_services }}"
+  when: arc_frontend_services.0 != ""
+
+- name: start and enable arc frontend services in particular order
   service: name={{ item }} state=started enabled=yes
-  with_items: "{{ arc_frontend_services | default({}) }}"
+  with_items:
+    - nordugrid-arc-slapd
+    - nordugrid-arc-bdii
+    - a-rex
+    - gridftpd
+    - nordugrid-arc-inforeg
   when: arc_frontend_services.0 != ""
 
 - name: disable arc frontend services

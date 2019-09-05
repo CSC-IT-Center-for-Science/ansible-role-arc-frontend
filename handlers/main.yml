@@ -1,8 +1,21 @@
 ---
 # handlers file for ansible-role-arc-frontend
 
- - name: restart_arc_frontend_services
-   service: 
-     name: "{{ item }}"
-     state: restarted
-   with_items: "{{ arc_frontend_services }}"
+- name: restart_arc_frontend_services
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items: "{{ arc_frontend_services }}"
+  notify: start arc frontend services in special sequence
+
+- name: start arc frontend services in special sequence
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - nordugrid-arc-slapd
+    - nordugrid-arc-bdii
+    - a-rex
+    - gridftpd
+    - nordugrid-arc-inforeg
+
